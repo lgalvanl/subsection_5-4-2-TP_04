@@ -32,22 +32,22 @@ void sirenInit()
     sirenPin = ON;
 }
 
-bool sirenStateRead()
+bool sirenStateRead() //NO BLOQUEANTE
 {
     return sirenState;
 }
 
-void sirenStateWrite( bool state )
+void sirenStateWrite( bool state ) //NO BLOQUEANTE
 {
     sirenState = state;
 }
 
-void sirenUpdate( int strobeTime )
+void sirenUpdate( int strobeTime )  //NO TAN BLOQUEANTE
 {
     static int accumulatedTimeAlarm = 0;
     accumulatedTimeAlarm = accumulatedTimeAlarm + SYSTEM_TIME_INCREMENT_MS;
     
-    if( sirenState ) {
+    if( sirenState ) { //SECCION BLOQUEANTE: pero podria ser peor
         if( accumulatedTimeAlarm >= strobeTime ) {
                 accumulatedTimeAlarm = 0;
                 sirenPin= !sirenPin;
