@@ -62,12 +62,12 @@ static void commandShowStoredEvents();
 
 //=====[Implementations of public functions]===================================
 
-void pcSerialComInit()
+void pcSerialComInit() // NO BLOQUEANTE
 {
     availableCommands();
 }
 
-char pcSerialComCharRead()
+char pcSerialComCharRead() //NO BLOQUEANTE
 {
     char receivedChar = '\0';
     if( uartUsb.readable() ) {
@@ -76,14 +76,14 @@ char pcSerialComCharRead()
     return receivedChar;
 }
 
-void pcSerialComStringWrite( const char* str )
+void pcSerialComStringWrite( const char* str ) //NO BLOQUEANTE
 {
     uartUsb.write( str, strlen(str) );
 }
 
 void pcSerialComUpdate()
 {
-    char receivedChar = pcSerialComCharRead();
+    char receivedChar = pcSerialComCharRead(); //NO BLOQUEANTE
     if( receivedChar != '\0' ) {
         switch ( pcSerialComMode ) {
             case PC_SERIAL_COMMANDS:
@@ -104,29 +104,32 @@ void pcSerialComUpdate()
     }    
 }
 
-bool pcSerialComCodeCompleteRead()
+bool pcSerialComCodeCompleteRead() //NO BLOQUEANTE
 {
     return codeComplete;
 }
 
-void pcSerialComCodeCompleteWrite( bool state )
+void pcSerialComCodeCompleteWrite( bool state ) //NO BLOQUEANTE
 {
     codeComplete = state;
 }
 
 //=====[Implementations of private functions]==================================
 
-static void pcSerialComStringRead( char* str, int strLength )
+static void pcSerialComStringRead( char* str, int strLength ) //FUNCION BLOQUEANTE: el programa se queda esperando a que se 
+//presione una tecla en pc 
 {
     int strIndex;
     for ( strIndex = 0; strIndex < strLength; strIndex++) {
+        if( uartUsb.readable() ) { //al agregar este if, si no hay nada para leer no espera leer (?)
         uartUsb.read( &str[strIndex] , 1 );
         uartUsb.write( &str[strIndex] ,1 );
+        }
     }
     str[strLength]='\0';
 }
 
-static void pcSerialComGetCodeUpdate( char receivedChar )
+static void pcSerialComGetCodeUpdate( char receivedChar ) //NO BLOQUEANTE
 {
     codeSequenceFromPcSerialCom[numberOfCodeChars] = receivedChar;
     pcSerialComStringWrite( "*" );
@@ -138,7 +141,7 @@ static void pcSerialComGetCodeUpdate( char receivedChar )
     } 
 }
 
-static void pcSerialComSaveNewCodeUpdate( char receivedChar )
+static void pcSerialComSaveNewCodeUpdate( char receivedChar ) // NO BLOQUEANTE
 {
     static char newCodeSequence[CODE_NUMBER_OF_KEYS];
 
@@ -186,7 +189,7 @@ static void availableCommands()
     pcSerialComStringWrite( "\r\n" );
 }
 
-static void commandShowCurrentAlarmState()
+static void commandShowCurrentAlarmState() //NO BLOQUEANTE
 {
     if ( sirenStateRead() ) {
         pcSerialComStringWrite( "The alarm is activated\r\n");
@@ -213,7 +216,7 @@ static void commandShowCurrentOverTemperatureDetectorState()
     }
 }
 
-static void commandEnterCodeSequence()
+static void commandEnterCodeSequence() //NO BLOQUEANTE
 {
     if( sirenStateRead() ) {
         pcSerialComStringWrite( "Please enter the four digits numeric code " );
@@ -226,7 +229,7 @@ static void commandEnterCodeSequence()
     }
 }
 
-static void commandEnterNewCode()
+static void commandEnterNewCode() //NO BLOQUEANTE
 {
     pcSerialComStringWrite( "Please enter the new four digits numeric code " );
     pcSerialComStringWrite( "to deactivate the alarm: " );
@@ -251,7 +254,7 @@ static void commandShowCurrentTemperatureInFahrenheit()
     pcSerialComStringWrite( str );  
 }
 
-static void commandSetDateAndTime()
+static void commandSetDateAndTime() //BLOQUEANTE PERO NO MALO
 {
     char year[5] = "";
     char month[3] = "";
