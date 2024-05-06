@@ -20,7 +20,7 @@
 
 //=====[Implementations of public functions]===================================
 
-char* dateAndTimeRead()
+char* dateAndTimeRead() // NO BLOQUEANTE
 {
     time_t epochSeconds;
     epochSeconds = time(NULL);
@@ -28,7 +28,7 @@ char* dateAndTimeRead()
 }
 
 void dateAndTimeWrite( int year, int month, int day, 
-                       int hour, int minute, int second )
+                       int hour, int minute, int second ) //NO BLOQUEANTE
 {
     struct tm rtcTime;
 
