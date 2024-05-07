@@ -12,7 +12,7 @@
 //=====[Declaration of private data types]=====================================
 
 //=====[Declaration and initialization of public global objects]===============
-
+Ticker sirenTicker;     //NUEVO
 DigitalOut sirenPin(PE_10);
 
 //=====[Declaration of external public global variables]=======================
@@ -42,12 +42,12 @@ void sirenStateWrite( bool state ) //NO BLOQUEANTE
     sirenState = state;
 }
 
-void sirenUpdate( int strobeTime )  //NO TAN BLOQUEANTE
+void sirenUpdateVieja( int strobeTime ) 
 {
     static int accumulatedTimeAlarm = 0;
     accumulatedTimeAlarm = accumulatedTimeAlarm + SYSTEM_TIME_INCREMENT_MS;
     
-    if( sirenState ) { //SECCION BLOQUEANTE: pero podria ser peor
+    if( sirenState ) { 
         if( accumulatedTimeAlarm >= strobeTime ) {
                 accumulatedTimeAlarm = 0;
                 sirenPin= !sirenPin;
@@ -55,6 +55,16 @@ void sirenUpdate( int strobeTime )  //NO TAN BLOQUEANTE
     } else {
         sirenPin = ON;
     }
+}
+
+void toggleSiren() { //NUEVO
+    sirenState = !sirenState;  
+    sirenPin = sirenState; 
+}
+
+void sirenUpdate( int strobeTime )  //NUEVO
+{
+sirenTicker.attach(toggleSiren, strobeTime);
 }
 
 //=====[Implementations of private functions]==================================
