@@ -10,6 +10,7 @@
 //=====[Declarations (prototypes) of public functions]=========================
 
 void sirenInit();
+void toggleSiren();
 bool sirenStateRead();
 void sirenStateWrite( bool state );
 void sirenUpdate( int strobeTime );
