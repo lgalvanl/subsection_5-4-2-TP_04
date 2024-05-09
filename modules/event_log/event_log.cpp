@@ -44,7 +44,7 @@ static void eventLogElementStateUpdate( bool lastState,
 
 //=====[Implementations of public functions]===================================
 
-void eventLogUpdate()
+void eventLogUpdate() //NO BLOQUEANTE
 {
     bool currentState = sirenStateRead();
     eventLogElementStateUpdate( sirenLastState, currentState, "ALARM" );
@@ -71,8 +71,8 @@ int eventLogNumberOfStoredEvents()
 {
     return eventsIndex;
 }
-
-void eventLogRead( int index, char* str )
+//Funcion que lee cierto evento
+void eventLogRead( int index, char* str ) //NO BLOQUEANTE
 {
     str[0] = '\0';
     strcat( str, "Event = " );
@@ -81,8 +81,8 @@ void eventLogRead( int index, char* str )
     strcat( str, ctime(&arrayOfStoredEvents[index].seconds) );
     strcat( str, "\r\n" );
 }
-
-void eventLogWrite( bool currentState, const char* elementName )
+//Funcion que escibre un evento
+void eventLogWrite( bool currentState, const char* elementName ) //NO BLOQUEANTE
 {
     char eventAndStateStr[EVENT_LOG_NAME_MAX_LENGTH] = "";
 
@@ -109,7 +109,7 @@ void eventLogWrite( bool currentState, const char* elementName )
 
 static void eventLogElementStateUpdate( bool lastState,
                                         bool currentState,
-                                        const char* elementName )
+                                        const char* elementName ) //NO BLOQUEANTE
 {
     if ( lastState != currentState ) {        
         eventLogWrite( currentState, elementName );       
