@@ -35,19 +35,20 @@ static void codeDeactivate();
 
 //=====[Implementations of public functions]===================================
 
-void codeWrite( char* newCodeSequence )
+void codeWrite( char* newCodeSequence ) //NO BLOQUEANTE
 {
     int i;
     for (i = 0; i < CODE_NUMBER_OF_KEYS; i++) {
         codeSequence[i] = newCodeSequence[i];
     }
 }
-
-bool codeMatchFrom( codeOrigin_t codeOrigin )
+//Se fija si el codigo ingresado es el correcto, ve si viene del teclado de la pc
+//o de la matrix teclado
+bool codeMatchFrom( codeOrigin_t codeOrigin ) //NO BLOQUEANTE
 {
     bool codeIsCorrect = false;
     switch (codeOrigin) {
-        case CODE_KEYPAD:
+        case CODE_KEYPAD: //caso donde uso el teclado matricial
             if( userInterfaceCodeCompleteRead() ) {
                 codeIsCorrect = codeMatch(codeSequenceFromUserInterface);
                 userInterfaceCodeCompleteWrite(false);
@@ -89,7 +90,8 @@ bool codeMatchFrom( codeOrigin_t codeOrigin )
 
 //=====[Implementations of private functions]==================================
 
-static bool codeMatch( char* codeToCompare )
+//Funcion que compara el codigo ingresado con el correcto
+static bool codeMatch( char* codeToCompare ) //NO BLOQUEANTE
 {
     int i;
     for (i = 0; i < CODE_NUMBER_OF_KEYS; i++) {
@@ -99,8 +101,8 @@ static bool codeMatch( char* codeToCompare )
     }
     return true;
 }
-
-static void codeDeactivate()
+//Funcion que desbloquea, aparece cuando el codigo es correcto
+static void codeDeactivate() //NO BLOQUEANTE
 {
     systemBlockedStateWrite(OFF);
     incorrectCodeStateWrite(OFF);
