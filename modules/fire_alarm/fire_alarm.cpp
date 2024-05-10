@@ -47,7 +47,7 @@ static int fireAlarmStrobeTime();
 
 //=====[Implementations of public functions]===================================
 
-void fireAlarmInit()
+void fireAlarmInit() //NO BLOQUEANTE
 {
     temperatureSensorInit();
     gasSensorInit();
@@ -57,7 +57,7 @@ void fireAlarmInit()
     alarmTestButton.mode(PullDown); 
 }
 
-void fireAlarmUpdate()
+void fireAlarmUpdate() //NO BLOQUEANTE
 {
     fireAlarmActivationUpdate();
     fireAlarmDeactivationUpdate();
@@ -65,29 +65,29 @@ void fireAlarmUpdate()
     strobeLightUpdate( fireAlarmStrobeTime() );    
 }
 
-bool gasDetectorStateRead()
+bool gasDetectorStateRead()//NO BLOQUEANTE
 {
     return gasDetectorState;
 }
 
-bool overTemperatureDetectorStateRead()
+bool overTemperatureDetectorStateRead()//NO BLOQUEANTE
 {
     return overTemperatureDetectorState;
 }
 
-bool gasDetectedRead()
+bool gasDetectedRead()//NO BLOQUEANTE
 {
     return gasDetected;
 }
 
-bool overTemperatureDetectedRead()
+bool overTemperatureDetectedRead() //NO BLOQUEANTE
 {
     return overTemperatureDetected;
 }
 
 //=====[Implementations of private functions]==================================
 
-static void fireAlarmActivationUpdate()
+static void fireAlarmActivationUpdate()//NO BLOQUEANTE
 {
     temperatureSensorUpdate();
     gasSensorUpdate();
@@ -117,7 +117,7 @@ static void fireAlarmActivationUpdate()
     }
 }
 
-static void fireAlarmDeactivationUpdate()
+static void fireAlarmDeactivationUpdate() //NO BLOQUEANTE
 {
     if ( sirenStateRead() ) {
         if ( codeMatchFrom(CODE_KEYPAD) ||
@@ -127,7 +127,7 @@ static void fireAlarmDeactivationUpdate()
     }
 }
 
-static void fireAlarmDeactivate()
+static void fireAlarmDeactivate() //NO BLOQUEANTE
 {
     sirenStateWrite(OFF);
     strobeLightStateWrite(OFF);
@@ -135,7 +135,7 @@ static void fireAlarmDeactivate()
     gasDetected             = OFF;    
 }
 
-static int fireAlarmStrobeTime()
+static int fireAlarmStrobeTime() //NO BLOQUEANTE
 {
     if( gasDetectedRead() && overTemperatureDetectedRead() ) {
         return STROBE_TIME_GAS_AND_OVER_TEMP;
