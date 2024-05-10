@@ -42,7 +42,7 @@ static void matrixKeypadReset();
 
 //=====[Implementations of public functions]===================================
 
-void matrixKeypadInit( int updateTime_ms )
+void matrixKeypadInit( int updateTime_ms ) //NO BLOQUEANTE
 {
     timeIncrement_ms = updateTime_ms;
     matrixKeypadState = MATRIX_KEYPAD_SCANNING;
@@ -52,7 +52,7 @@ void matrixKeypadInit( int updateTime_ms )
     }
 }
 
-char matrixKeypadUpdate()
+char matrixKeypadUpdate() //NO BLOQUEANTE
 {
     static int accumulatedDebounceMatrixKeypadTime = 0;
     static char matrixKeypadLastKeyPressed = '\0';
@@ -104,7 +104,7 @@ char matrixKeypadUpdate()
 
 //=====[Implementations of private functions]==================================
 
-static char matrixKeypadScan()
+static char matrixKeypadScan() //NO BLOQUEANTE
 {
     int row = 0;
     int col = 0;
@@ -135,7 +135,7 @@ static char matrixKeypadScan()
     return '\0';
 }
 
-static void matrixKeypadReset()
+static void matrixKeypadReset() //NO BLOQUEANTE
 {
     matrixKeypadState = MATRIX_KEYPAD_SCANNING;
 }
