@@ -11,7 +11,7 @@
 //=====[Declaration of private data types]=====================================
 
 //=====[Declaration and initialization of public global objects]===============
-
+Ticker StrobeTicker;     //NUEVO
 DigitalOut strobeLight(LED1);
 
 //=====[Declaration of external public global variables]=======================
@@ -41,7 +41,7 @@ void strobeLightStateWrite( bool state )
     strobeLightState = state;
 }
 
-void strobeLightUpdate( int strobeTime )
+void strobeLightUpdateVieja( int strobeTime )
 {
     static int accumulatedTimeAlarm = 0;
     accumulatedTimeAlarm = accumulatedTimeAlarm + SYSTEM_TIME_INCREMENT_MS;
@@ -55,6 +55,14 @@ void strobeLightUpdate( int strobeTime )
         strobeLight = OFF;
     }
 }
-
+void toggleStrobe()
+{
+strobeLightState = !strobeLightState;
+strobeLight = strobeLightState;
+}
+void strobeLightUpdate( int strobeTime )
+{
+    StrobeTicker.attach(toggleStrobe, strobeTime);
+}
 //=====[Implementations of private functions]==================================
 
