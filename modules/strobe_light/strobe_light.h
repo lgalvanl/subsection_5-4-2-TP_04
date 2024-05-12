@@ -13,7 +13,8 @@ void strobeLightInit();
 bool strobeLightStateRead();
 void strobeLightStateWrite( bool state );
 void strobeLightUpdate( int strobeTime );
-
+void strobeLightUpdateVieja( int strobeTime );
+void toggleStrobe();
 //=====[#include guards - end]=================================================
 
 #endif // _STROBE_LIGHT_H_
