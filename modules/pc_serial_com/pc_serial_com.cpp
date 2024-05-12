@@ -34,7 +34,7 @@ UnbufferedSerial uartUsb(USBTX, USBRX, 115200);
 char codeSequenceFromPcSerialCom[CODE_NUMBER_OF_KEYS];
 
 //=====[Declaration and initialization of private global variables]============
-
+Ticker ChequeoTicker;  
 static pcSerialComMode_t pcSerialComMode = PC_SERIAL_COMMANDS;
 static bool codeComplete = false;
 static int numberOfCodeChars = 0;
@@ -81,9 +81,9 @@ void pcSerialComStringWrite( const char* str ) //NO BLOQUEANTE
     uartUsb.write( str, strlen(str) );
 }
 
-void pcSerialComUpdate()
+void pcSerialComUpdate() //NO BLOQUEANTE
 {
-    char receivedChar = pcSerialComCharRead(); //NO BLOQUEANTE
+    char receivedChar = pcSerialComCharRead(); 
     if( receivedChar != '\0' ) {
         switch ( pcSerialComMode ) {
             case PC_SERIAL_COMMANDS:
@@ -115,16 +115,19 @@ void pcSerialComCodeCompleteWrite( bool state ) //NO BLOQUEANTE
 }
 
 //=====[Implementations of private functions]==================================
+void ChequeoSirena( int strobeTime )  //NUEVO
+{
+ChequeoTicker.attach(fireAlarmUpdate, strobeTime);
+}
 
 static void pcSerialComStringRead( char* str, int strLength ) //FUNCION BLOQUEANTE: el programa se queda esperando a que se 
 //presione una tecla en pc 
-{
+{ 
     int strIndex;
     for ( strIndex = 0; strIndex < strLength; strIndex++) {
-        if( uartUsb.readable() ) { //al agregar este if, si no hay nada para leer no espera leer (?)
+        ChequeoSirena(100ms); //Mientras espera a las teclas esta verificando el estado del gas y temperatura
         uartUsb.read( &str[strIndex] , 1 );
         uartUsb.write( &str[strIndex] ,1 );
-        }
     }
     str[strLength]='\0';
 }
@@ -156,7 +159,7 @@ static void pcSerialComSaveNewCodeUpdate( char receivedChar ) // NO BLOQUEANTE
     } 
 }
 
-static void pcSerialComCommandUpdate( char receivedChar )
+static void pcSerialComCommandUpdate( char receivedChar ) //NO BLOQUEANTE
 {
     switch (receivedChar) {
         case '1': commandShowCurrentAlarmState(); break;
@@ -173,7 +176,7 @@ static void pcSerialComCommandUpdate( char receivedChar )
     } 
 }
 
-static void availableCommands()
+static void availableCommands() //NO BLOQUEANTE
 {
     pcSerialComStringWrite( "Available commands:\r\n" );
     pcSerialComStringWrite( "Press '1' to get the alarm state\r\n" );
@@ -198,7 +201,7 @@ static void commandShowCurrentAlarmState() //NO BLOQUEANTE
     }
 }
 
-static void commandShowCurrentGasDetectorState()
+static void commandShowCurrentGasDetectorState() //NO BLOQUEANTE
 {
     if ( gasDetectorStateRead() ) {
         pcSerialComStringWrite( "Gas is being detected\r\n");
@@ -207,7 +210,7 @@ static void commandShowCurrentGasDetectorState()
     }    
 }
 
-static void commandShowCurrentOverTemperatureDetectorState()
+static void commandShowCurrentOverTemperatureDetectorState() //NO BLOQUEANTE
 {
     if ( overTemperatureDetectorStateRead() ) {
         pcSerialComStringWrite( "Temperature is above the maximum level\r\n");
@@ -238,7 +241,7 @@ static void commandEnterNewCode() //NO BLOQUEANTE
 
 }
 
-static void commandShowCurrentTemperatureInCelsius()
+static void commandShowCurrentTemperatureInCelsius() //NO BLOQUEANTE
 {
     char str[100] = "";
     sprintf ( str, "Temperature: %.2f \xB0 C\r\n",
@@ -246,7 +249,7 @@ static void commandShowCurrentTemperatureInCelsius()
     pcSerialComStringWrite( str );  
 }
 
-static void commandShowCurrentTemperatureInFahrenheit()
+static void commandShowCurrentTemperatureInFahrenheit() //NO BLOQUEANTE
 {
     char str[100] = "";
     sprintf ( str, "Temperature: %.2f \xB0 C\r\n",
@@ -254,7 +257,7 @@ static void commandShowCurrentTemperatureInFahrenheit()
     pcSerialComStringWrite( str );  
 }
 
-static void commandSetDateAndTime() //BLOQUEANTE PERO NO MALO
+static void commandSetDateAndTime() //BLOQUEANTE por que contiene a "pcSerialComStringRead"
 {
     char year[5] = "";
     char month[3] = "";
@@ -293,7 +296,7 @@ static void commandSetDateAndTime() //BLOQUEANTE PERO NO MALO
         atoi(hour), atoi(minute), atoi(second) );
 }
 
-static void commandShowDateAndTime()
+static void commandShowDateAndTime()  //NO BLOQUEANTE
 {
     char str[100] = "";
     sprintf ( str, "Date and Time = %s", dateAndTimeRead() );
@@ -301,7 +304,7 @@ static void commandShowDateAndTime()
     pcSerialComStringWrite("\r\n");
 }
 
-static void commandShowStoredEvents()
+static void commandShowStoredEvents() //NO BLOQUEANTE
 {
     char str[EVENT_STR_LENGTH] = "";
     int i;
