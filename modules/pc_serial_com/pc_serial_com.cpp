@@ -125,7 +125,7 @@ static void pcSerialComStringRead( char* str, int strLength ) //FUNCION BLOQUEAN
 { 
     int strIndex;
     for ( strIndex = 0; strIndex < strLength; strIndex++) {
-        ChequeoSirena(100ms); //Mientras espera a las teclas esta verificando el estado del gas y temperatura
+        ChequeoSirena(1); //Mientras espera a las teclas esta verificando el estado del gas y temperatura
         uartUsb.read( &str[strIndex] , 1 );
         uartUsb.write( &str[strIndex] ,1 );
     }
